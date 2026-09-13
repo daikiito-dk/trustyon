@@ -4,6 +4,7 @@ body { margin: 0; min-width: 320px; min-height: 100vh; }
 button, input, select, textarea { font: inherit; }
 button { cursor: pointer; }
 button:disabled { cursor: not-allowed; opacity: .5; }
+a { color: inherit; }
 .shell { width: min(1100px, calc(100% - 40px)); margin: 0 auto; padding: 48px 0 80px; }
 .header { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
 .header-actions { display: flex; align-items: center; gap: 10px; }
@@ -30,7 +31,7 @@ h1 { margin: 6px 0 0; font-size: 28px; letter-spacing: -.04em; }
 .task-form button, .mini-form button { padding: 11px 16px; border: 0; border-radius: 10px; background: #f4f4f5; color: #09090b; font-weight: 700; }
 .mini-form { display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-top: 16px; }
 .mini-form button { width: 42px; padding: 0; font-size: 20px; }
-.task-list, .simple-list, .activity-list { list-style: none; padding: 12px 0 0; margin: 0; }
+.task-list, .simple-list, .activity-list, .repo-list { list-style: none; padding: 12px 0 0; margin: 0; }
 .task-list li, .simple-list li { display: flex; align-items: center; gap: 10px; min-height: 36px; color: #d4d4d8; font-size: 14px; }
 .check, .delete { flex: 0 0 auto; width: 24px; height: 24px; padding: 0; border: 1px solid #3f3f46; border-radius: 6px; background: transparent; color: #a1a1aa; }
 .check:hover { border-color: #71717a; color: #f4f4f5; }
@@ -49,4 +50,12 @@ h1 { margin: 6px 0 0; font-size: 28px; letter-spacing: -.04em; }
 .activity-list b, .activity-list span { display: block; }
 .activity-list b { margin-bottom: 4px; color: #d4d4d8; font-size: 13px; }
 .activity-list span { color: #a1a1aa; font-size: 13px; line-height: 1.5; }
+.repo-list li { padding: 13px 0; border-bottom: 1px solid #1f1f22; }
+.repo-list li:last-child { border-bottom: 0; }
+.repo-list b, .repo-list span { display: block; }
+.repo-list b { margin-bottom: 4px; color: #e4e4e7; font-size: 13px; }
+.repo-list a { text-decoration: none; }
+.repo-list a:hover { text-decoration: underline; }
+.repo-list span { color: #a1a1aa; font-size: 13px; line-height: 1.5; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.repo-list small { display: block; margin-top: 6px; color: #71717a; font-size: 11px; }
 @media (max-width: 640px) { .shell { width: min(100% - 28px, 1100px); padding-top: 28px; } .header { align-items: flex-start; } .header-actions { flex-wrap: wrap; justify-content: flex-end; } .hero { margin-top: 72px; } .grid { grid-template-columns: 1fr; } .card.wide { grid-column: span 1; } .task-form { grid-template-columns: 1fr auto; } .task-form input { grid-column: 1 / -1; } .activity-list li { grid-template-columns: 1fr; gap: 4px; } }
