@@ -26,6 +26,10 @@ h1 { margin: 6px 0 0; font-size: 28px; letter-spacing: -.04em; }
 .card.wide { grid-column: span 2; min-height: 210px; }
 .card-title { display: flex; justify-content: space-between; align-items: baseline; font-size: 14px; color: #d4d4d8; }
 .card-title strong { font-size: 32px; letter-spacing: -.04em; }
+.task-list, .simple-list { list-style: none; padding: 12px 0 0; margin: 0; }
+.task-list li, .simple-list li { display: flex; align-items: center; gap: 10px; min-height: 36px; color: #d4d4d8; font-size: 14px; }
+.task-list li > span, .simple-list li > span { color: #71717a; width: 18px; }
+.task-list small { margin-left: auto; color: #71717a; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }
 
 @media (max-width: 640px) {
   .shell { width: min(100% - 28px, 1100px); padding-top: 28px; }
