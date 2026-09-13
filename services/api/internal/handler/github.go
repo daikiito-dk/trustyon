@@ -12,56 +12,31 @@ import (
 	"github.com/daikiito-dk/trustyon/services/api/internal/repository"
 )
 
-type GitHubActivity struct {
-	ID        string    `json:"id"`
-	Type      string    `json:"type"`
-	Repo      string    `json:"repo"`
-	Summary   string    `json:"summary"`
-	URL       string    `json:"url,omitempty"`
-	CreatedAt time.Time `json:"createdAt"`
-}
+type GitHubActivity struct { ID string `json:"id"`; Type string `json:"type"`; Repo string `json:"repo"`; Summary string `json:"summary"`; URL string `json:"url,omitempty"`; CreatedAt time.Time `json:"createdAt"` }
 
 type githubEvent struct {
-	ID string `json:"id"`
-	Type string `json:"type"`
-	Repo struct { Name string `json:"name"` } `json:"repo"`
-	Created string `json:"created_at"`
-	Payload struct {
-		Action string `json:"action"`
-		Commits []struct { Message string `json:"message"` } `json:"commits"`
-		Issue struct { Title string `json:"title"` } `json:"issue"`
-		PullRequest struct { Title string `json:"title"` } `json:"pull_request"`
-	} `json:"payload"`
+	ID string `json:"id"`; Type string `json:"type"`; Repo struct { Name string `json:"name"` } `json:"repo"`; Created string `json:"created_at"`
+	Payload struct { Action string `json:"action"`; Commits []struct { Message string `json:"message"` } `json:"commits"`; Issue struct { Title string `json:"title"` } `json:"issue"`; PullRequest struct { Title string `json:"title"` } `json:"pull_request"` } `json:"payload"`
 }
 
 func NewGitHubActivityHandler(repo *repository.GitHubActivityRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		username := strings.TrimSpace(os.Getenv("GITHUB_USERNAME"))
-		if username == "" { username = "daikiito-dk" }
+		username := strings.TrimSpace(os.Getenv("GITHUB_USERNAME")); if username == "" { username = "daikiito-dk" }
 		endpoint := "https://api.github.com/users/" + username + "/events/public?per_page=100"
+		token := ""
+		if cookie, err := r.Cookie("trustyon_github_token"); err == nil { token = cookie.Value }
+		if token != "" { endpoint = "https://api.github.com/user/events?per_page=100" }
 		req, err := http.NewRequestWithContext(r.Context(), http.MethodGet, endpoint, nil)
 		if err != nil { httpx.Error(w, http.StatusInternalServerError, "could not create GitHub request"); return }
-		if cookie, cookieErr := r.Cookie("trustyon_github_token"); cookieErr == nil && cookie.Value != "" {
-			req.Header.Set("Authorization", "Bearer "+cookie.Value)
-			endpoint = "https://api.github.com/user/events?per_page=100"
-			req.URL, _ = http.NewRequest(http.MethodGet, endpoint, nil)
-			req = req.WithContext(r.Context())
-			req.Header.Set("Authorization", "Bearer "+cookie.Value)
-		}
-		req.Header.Set("Accept", "application/vnd.github+json")
-		req.Header.Set("X-GitHub-Api-Version", "2022-11-28")
-		resp, err := http.DefaultClient.Do(req)
-		if err != nil { httpx.Error(w, http.StatusBadGateway, "GitHub is unavailable"); return }
-		defer resp.Body.Close()
-		if resp.StatusCode != http.StatusOK { httpx.Error(w, http.StatusBadGateway, fmt.Sprintf("GitHub returned %d", resp.StatusCode)); return }
-		var events []githubEvent
-		if err := json.NewDecoder(resp.Body).Decode(&events); err != nil { httpx.Error(w, http.StatusBadGateway, "invalid GitHub response"); return }
+		req.Header.Set("Accept", "application/vnd.github+json"); req.Header.Set("X-GitHub-Api-Version", "2022-11-28")
+		if token != "" { req.Header.Set("Authorization", "Bearer "+token) }
+		resp, err := http.DefaultClient.Do(req); if err != nil { httpx.Error(w, http.StatusBadGateway, "GitHub is unavailable"); return }
+		defer resp.Body.Close(); if resp.StatusCode != http.StatusOK { httpx.Error(w, http.StatusBadGateway, fmt.Sprintf("GitHub returned %d", resp.StatusCode)); return }
+		var events []githubEvent; if err := json.NewDecoder(resp.Body).Decode(&events); err != nil { httpx.Error(w, http.StatusBadGateway, "invalid GitHub response"); return }
 		for _, event := range events {
-			created, err := time.Parse(time.RFC3339, event.Created); if err != nil { continue }
-			summary := event.Type
+			created, err := time.Parse(time.RFC3339, event.Created); if err != nil { continue }; summary := event.Type
 			switch event.Type {
-			case "PushEvent":
-				count := len(event.Payload.Commits); summary = fmt.Sprintf("pushed %d commit%s", count, plural(count)); if count > 0 && strings.TrimSpace(event.Payload.Commits[0].Message) != "" { summary += ": " + strings.Split(event.Payload.Commits[0].Message, "\n")[0] }
+			case "PushEvent": count := len(event.Payload.Commits); summary = fmt.Sprintf("pushed %d commit%s", count, plural(count)); if count > 0 && strings.TrimSpace(event.Payload.Commits[0].Message) != "" { summary += ": " + strings.Split(event.Payload.Commits[0].Message, "\n")[0] }
 			case "IssuesEvent": summary = fmt.Sprintf("%s issue: %s", event.Payload.Action, event.Payload.Issue.Title)
 			case "PullRequestEvent": summary = fmt.Sprintf("%s PR: %s", event.Payload.Action, event.Payload.PullRequest.Title)
 			case "CreateEvent": summary = "created a repository reference"
@@ -76,5 +51,4 @@ func NewGitHubActivityHandler(repo *repository.GitHubActivityRepository) http.Ha
 		httpx.Write(w, http.StatusOK, activities)
 	}
 }
-
 func plural(n int) string { if n == 1 { return "" }; return "s" }
