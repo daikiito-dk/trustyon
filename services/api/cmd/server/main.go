@@ -21,6 +21,7 @@ func main() {
 	projectHandler := handler.NewProjectHandler(projects); taskHandler := handler.NewTaskHandler(tasks); noteHandler := handler.NewNoteHandler(notes); authHandler := handler.NewGitHubAuthHandler()
 	mux.HandleFunc("GET /api/github/activity", handler.NewGitHubActivityHandler(githubActivity))
 	mux.HandleFunc("GET /api/github/repos", handler.NewGitHubRepoHandler())
+	mux.HandleFunc("POST /api/github/sync", handler.NewGitHubSyncHandler(projects))
 	mux.HandleFunc("GET /api/auth/github/login", authHandler.Login)
 	mux.HandleFunc("GET /api/auth/github/callback", authHandler.Callback)
 	mux.HandleFunc("GET /api/auth/me", authHandler.Me)
