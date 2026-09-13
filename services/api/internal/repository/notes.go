@@ -27,3 +27,12 @@ func (r *NoteRepository) List(ctx context.Context) ([]model.Note, error) {
 func (r *NoteRepository) Create(ctx context.Context, n *model.Note) error {
 	return r.db.QueryRow(ctx, `INSERT INTO notes(project_id,title,body) VALUES($1,$2,$3) RETURNING id,created_at,updated_at`, n.ProjectID,n.Title,n.Body).Scan(&n.ID,&n.CreatedAt,&n.UpdatedAt)
 }
+
+func (r *NoteRepository) Update(ctx context.Context, id int64, n *model.Note) error {
+	return r.db.QueryRow(ctx, `UPDATE notes SET project_id=$1,title=$2,body=$3,updated_at=NOW() WHERE id=$4 RETURNING id,created_at,updated_at`, n.ProjectID,n.Title,n.Body,id).Scan(&n.ID,&n.CreatedAt,&n.UpdatedAt)
+}
+
+func (r *NoteRepository) Delete(ctx context.Context, id int64) error {
+	_, err := r.db.Exec(ctx, `DELETE FROM notes WHERE id=$1`, id)
+	return err
+}
