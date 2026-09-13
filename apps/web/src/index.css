@@ -29,9 +29,11 @@ h1 { margin: 6px 0 0; font-size: 28px; letter-spacing: -.04em; }
 .card-title { display: flex; justify-content: space-between; align-items: baseline; font-size: 14px; color: #d4d4d8; }
 .card-title strong { font-size: 32px; letter-spacing: -.04em; }
 .task-form { display: grid; grid-template-columns: 1fr auto auto; gap: 8px; margin-top: 18px; }
-.task-form input, .task-form select { min-width: 0; padding: 11px 12px; border: 1px solid #27272a; border-radius: 10px; outline: none; background: #09090b; color: #f4f4f5; }
-.task-form input:focus, .task-form select:focus { border-color: #52525b; }
-.task-form button { padding: 11px 16px; border: 0; border-radius: 10px; background: #f4f4f5; color: #09090b; font-weight: 700; }
+.task-form input, .task-form select, .mini-form input { min-width: 0; padding: 11px 12px; border: 1px solid #27272a; border-radius: 10px; outline: none; background: #09090b; color: #f4f4f5; }
+.task-form input:focus, .task-form select:focus, .mini-form input:focus { border-color: #52525b; }
+.task-form button, .mini-form button { padding: 11px 16px; border: 0; border-radius: 10px; background: #f4f4f5; color: #09090b; font-weight: 700; }
+.mini-form { display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-top: 16px; }
+.mini-form button { width: 42px; padding: 0; font-size: 20px; }
 .task-list, .simple-list { list-style: none; padding: 12px 0 0; margin: 0; }
 .task-list li, .simple-list li { display: flex; align-items: center; gap: 10px; min-height: 36px; color: #d4d4d8; font-size: 14px; }
 .check, .delete { flex: 0 0 auto; width: 24px; height: 24px; padding: 0; border: 1px solid #3f3f46; border-radius: 6px; background: transparent; color: #a1a1aa; }
