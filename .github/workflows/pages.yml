@@ -24,6 +24,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+          cache: npm
+          cache-dependency-path: apps/web/package.json
+      - uses: actions/configure-pages@v5
       - name: Build web app
         working-directory: apps/web
         run: |
