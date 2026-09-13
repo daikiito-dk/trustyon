@@ -1,14 +1,16 @@
 package repository
 
-import "context"
+import (
+	"context"
 
-// EnsureSchema applies the small set of idempotent schema changes that were
-// introduced after the initial MVP migration. This keeps existing development
-// databases compatible with newer application binaries while the SQL files
-// remain the source of truth for fresh PostgreSQL volumes.
-func EnsureSchema(ctx context.Context, db interface {
-	Exec(context.Context, string, ...any) (any, error)
-}) error {
+	"github.com/jackc/pgx/v5/pgxpool"
+)
+
+// EnsureSchema applies idempotent schema changes introduced after the initial
+// MVP migration. This keeps existing development databases compatible with
+// newer application binaries while SQL files remain the source of truth for
+// fresh PostgreSQL volumes.
+func EnsureSchema(ctx context.Context, db *pgxpool.Pool) error {
 	statements := []string{
 		`CREATE TABLE IF NOT EXISTS github_activities (
 			id TEXT PRIMARY KEY,
