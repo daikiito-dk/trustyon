@@ -8,7 +8,9 @@
 
 * { box-sizing: border-box; }
 body { margin: 0; min-width: 320px; min-height: 100vh; }
-button, input, textarea { font: inherit; }
+button, input, select, textarea { font: inherit; }
+button { cursor: pointer; }
+button:disabled { cursor: not-allowed; opacity: .5; }
 
 .shell { width: min(1100px, calc(100% - 40px)); margin: 0 auto; padding: 48px 0 80px; }
 .header { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
@@ -26,14 +28,28 @@ h1 { margin: 6px 0 0; font-size: 28px; letter-spacing: -.04em; }
 .card.wide { grid-column: span 2; min-height: 210px; }
 .card-title { display: flex; justify-content: space-between; align-items: baseline; font-size: 14px; color: #d4d4d8; }
 .card-title strong { font-size: 32px; letter-spacing: -.04em; }
+.task-form { display: grid; grid-template-columns: 1fr auto auto; gap: 8px; margin-top: 18px; }
+.task-form input, .task-form select { min-width: 0; padding: 11px 12px; border: 1px solid #27272a; border-radius: 10px; outline: none; background: #09090b; color: #f4f4f5; }
+.task-form input:focus, .task-form select:focus { border-color: #52525b; }
+.task-form button { padding: 11px 16px; border: 0; border-radius: 10px; background: #f4f4f5; color: #09090b; font-weight: 700; }
 .task-list, .simple-list { list-style: none; padding: 12px 0 0; margin: 0; }
 .task-list li, .simple-list li { display: flex; align-items: center; gap: 10px; min-height: 36px; color: #d4d4d8; font-size: 14px; }
-.task-list li > span, .simple-list li > span { color: #71717a; width: 18px; }
-.task-list small { margin-left: auto; color: #71717a; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }
+.check, .delete { flex: 0 0 auto; width: 24px; height: 24px; padding: 0; border: 1px solid #3f3f46; border-radius: 6px; background: transparent; color: #a1a1aa; }
+.check:hover { border-color: #71717a; color: #f4f4f5; }
+.task-name { flex: 1; min-width: 0; }
+.task-list small { color: #71717a; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }
+.delete { border: 0; font-size: 20px; line-height: 1; color: #52525b; }
+.delete:hover { color: #f87171; }
+.completed { margin-top: 20px; padding-top: 16px; border-top: 1px solid #27272a; }
+.completed-task { display: flex; align-items: center; gap: 10px; min-height: 34px; color: #71717a; font-size: 14px; }
+.completed-task span { flex: 1; text-decoration: line-through; }
+.simple-list li > span { color: #71717a; width: 18px; }
 
 @media (max-width: 640px) {
   .shell { width: min(100% - 28px, 1100px); padding-top: 28px; }
   .hero { margin-top: 72px; }
   .grid { grid-template-columns: 1fr; }
   .card.wide { grid-column: span 1; }
+  .task-form { grid-template-columns: 1fr auto; }
+  .task-form input { grid-column: 1 / -1; }
 }
