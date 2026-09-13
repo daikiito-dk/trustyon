@@ -25,14 +25,15 @@ func main() {
 		if err := db.Ping(r.Context()); err != nil { w.WriteHeader(http.StatusServiceUnavailable); json.NewEncoder(w).Encode(map[string]string{"status":"degraded"}); return }
 		json.NewEncoder(w).Encode(map[string]string{"status":"ok"})
 	})
-	mux.HandleFunc("GET /api/github/activity", handler.GitHubActivityHandler)
 
 	projects := repository.NewProjectRepository(db)
 	tasks := repository.NewTaskRepository(db)
 	notes := repository.NewNoteRepository(db)
+	githubActivity := repository.NewGitHubActivityRepository(db)
 	projectHandler := handler.NewProjectHandler(projects)
 	taskHandler := handler.NewTaskHandler(tasks)
 	noteHandler := handler.NewNoteHandler(notes)
+	mux.HandleFunc("GET /api/github/activity", handler.NewGitHubActivityHandler(githubActivity))
 	mux.Handle("/api/projects", projectHandler)
 	mux.Handle("/api/projects/", projectHandler)
 	mux.Handle("/api/tasks", taskHandler)
