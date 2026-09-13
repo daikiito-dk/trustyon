@@ -12,8 +12,14 @@ import (
 )
 
 func main() {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second); defer cancel()
-	db, err := repository.NewPool(ctx); if err != nil { log.Fatal(err) }; defer db.Close()
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	db, err := repository.NewPool(ctx)
+	if err != nil { log.Fatal(err) }
+	defer db.Close()
+	if err := db.Ping(ctx); err != nil { log.Fatal(err) }
+	if err := repository.EnsureSchema(ctx, db); err != nil { log.Fatal(err) }
+
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /api/healthz", func(w http.ResponseWriter, r *http.Request) { w.Header().Set("Content-Type", "application/json"); if err := db.Ping(r.Context()); err != nil { w.WriteHeader(http.StatusServiceUnavailable); _ = json.NewEncoder(w).Encode(map[string]string{"status":"degraded"}); return }; _ = json.NewEncoder(w).Encode(map[string]string{"status":"ok"}) })
 
