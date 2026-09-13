@@ -27,7 +27,11 @@ func main() {
 	})
 
 	projects := repository.NewProjectRepository(db)
+	tasks := repository.NewTaskRepository(db)
+	notes := repository.NewNoteRepository(db)
 	mux.Handle("/api/projects", handler.NewProjectHandler(projects))
+	mux.Handle("/api/tasks", handler.NewTaskHandler(tasks))
+	mux.Handle("/api/notes", handler.NewNoteHandler(notes))
 
 	server := &http.Server{Addr: ":8080", Handler: logging(mux)}
 	log.Println("Trustyon API listening on :8080")
