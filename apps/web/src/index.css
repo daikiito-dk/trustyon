@@ -8,7 +8,8 @@ a { color: inherit; }
 .shell { width: min(1100px, calc(100% - 40px)); margin: 0 auto; padding: 48px 0 80px; }
 .header { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
 .header-actions { display: flex; align-items: center; gap: 10px; }
-.github-login, .account { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border: 1px solid #27272a; border-radius: 999px; background: #111113; color: #d4d4d8; text-decoration: none; font-size: 12px; }
+.github-login, .account, .sync-button { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border: 1px solid #27272a; border-radius: 999px; background: #111113; color: #d4d4d8; text-decoration: none; font-size: 12px; }
+.sync-button { cursor: pointer; background: #f4f4f5; color: #09090b; border-color: #f4f4f5; font-weight: 700; }
 .account { cursor: pointer; }
 .account img { width: 20px; height: 20px; border-radius: 50%; }
 .eyebrow { margin: 0; color: #71717a; font-size: 11px; font-weight: 800; letter-spacing: .16em; }
