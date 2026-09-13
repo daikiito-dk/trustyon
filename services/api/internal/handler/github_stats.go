@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -37,31 +36,16 @@ func NewGitHubStatsHandler() http.HandlerFunc {
 		to := time.Now().UTC()
 		from := to.AddDate(0, 0, -7)
 		login, err := githubLogin(r, cookie.Value)
-		if err != nil {
-			httpx.Error(w, http.StatusBadGateway, err.Error())
-			return
-		}
+		if err != nil { httpx.Error(w, http.StatusBadGateway, err.Error()); return }
 
 		commits, err := githubSearchCount(r, cookie.Value, fmt.Sprintf("author:%s committer-date:%s..%s", login, from.Format("2006-01-02"), to.Format("2006-01-02")), "commits")
-		if err != nil {
-			httpx.Error(w, http.StatusBadGateway, err.Error())
-			return
-		}
+		if err != nil { httpx.Error(w, http.StatusBadGateway, err.Error()); return }
 		prs, err := githubSearchCount(r, cookie.Value, fmt.Sprintf("author:%s created:%s..%s type:pr", login, from.Format("2006-01-02"), to.Format("2006-01-02")), "issues")
-		if err != nil {
-			httpx.Error(w, http.StatusBadGateway, err.Error())
-			return
-		}
+		if err != nil { httpx.Error(w, http.StatusBadGateway, err.Error()); return }
 		issues, err := githubSearchCount(r, cookie.Value, fmt.Sprintf("author:%s created:%s..%s type:issue", login, from.Format("2006-01-02"), to.Format("2006-01-02")), "issues")
-		if err != nil {
-			httpx.Error(w, http.StatusBadGateway, err.Error())
-			return
-		}
+		if err != nil { httpx.Error(w, http.StatusBadGateway, err.Error()); return }
 		repositories, err := githubRepoCount(r, cookie.Value)
-		if err != nil {
-			httpx.Error(w, http.StatusBadGateway, err.Error())
-			return
-		}
+		if err != nil { httpx.Error(w, http.StatusBadGateway, err.Error()); return }
 
 		httpx.Write(w, http.StatusOK, GitHubStats{From: from, To: to, Commits: commits, PullRequests: prs, Issues: issues, Repositories: repositories})
 	}
@@ -95,11 +79,11 @@ func githubRepoCount(r *http.Request, token string) (int, error) {
 	if link := resp.Header.Get("Link"); link != "" && strings.Contains(link, `rel="last"`) {
 		for _, part := range strings.Split(link, ",") {
 			if !strings.Contains(part, `rel="last"`) { continue }
-			start, end := strings.Index(part, "page="), strings.Index(part[start:], ">")
+			start := strings.Index(part, "page=")
+			end := strings.Index(part[start:], ">")
 			if start >= 0 && end > 0 {
 				end += start
-				pageText := part[start+5 : end]
-				if page, parseErr := strconv.Atoi(pageText); parseErr == nil { count = (page-1)*100 + len(repos) }
+				if page, parseErr := strconv.Atoi(part[start+5 : end]); parseErr == nil { count = (page-1)*100 + len(repos) }
 			}
 		}
 	}
@@ -123,5 +107,3 @@ func setGitHubHeaders(req *http.Request, token string) {
 	req.Header.Set("Accept", "application/vnd.github+json")
 	req.Header.Set("X-GitHub-Api-Version", "2022-11-28")
 }
-
-var _ = os.Getenv
