@@ -3,14 +3,17 @@ package model
 import "time"
 
 type Project struct {
-	ID          int64     `json:"id"`
-	Name        string    `json:"name"`
-	Slug        string    `json:"slug"`
-	Description string    `json:"description"`
-	Status      string    `json:"status"`
-	RepoURL     string    `json:"repoUrl"`
-	CreatedAt   time.Time `json:"createdAt"`
-	UpdatedAt   time.Time `json:"updatedAt"`
+	ID             int64      `json:"id"`
+	Name           string     `json:"name"`
+	Slug           string     `json:"slug"`
+	Description    string     `json:"description"`
+	Status         string     `json:"status"`
+	RepoURL        string     `json:"repoUrl"`
+	GitHubRepoID   *int64     `json:"githubRepoId,omitempty"`
+	GitHubFullName string     `json:"githubFullName,omitempty"`
+	GitHubSyncedAt *time.Time `json:"githubSyncedAt,omitempty"`
+	CreatedAt      time.Time  `json:"createdAt"`
+	UpdatedAt      time.Time  `json:"updatedAt"`
 }
 
 type Task struct {
